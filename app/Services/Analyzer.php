@@ -18,7 +18,7 @@ class Anazlyzer{
 	}
 
 	public static function canTransfer(Identity $identity, $conversation_id){
-		if($identity->auth && !$identity->isnull){
+		if(!$identity->isnull){
 			$transaction = Conversation::where('conversation_id', $conversation_id)->transaction;
 			if( !is_null($transaction) ){
 				if($transaction->status==0){
