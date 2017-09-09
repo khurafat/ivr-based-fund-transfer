@@ -1,0 +1,19 @@
+ip: 192.168.100.20
+memory: 1024
+cpus: 1
+provider: virtualbox
+authorize: ~/.ssh/id_rsa.pub
+keys:
+    - ~/.ssh/id_rsa
+folders:
+    -
+        map: /Users/mSingh/Sites/OpenSource/DCBHackathon/App
+        to: /home/vagrant/dcbhackathon
+sites:
+    -
+        map: dcb.app
+        to: /home/vagrant/dcbhackathon/public
+databases:
+    - homestead
+name: dcbhackathon
+hostname: dcbhackathon
