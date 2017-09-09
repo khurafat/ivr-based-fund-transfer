@@ -40,7 +40,7 @@ Route::get('/answer', function (Request $request)
 {
 	// Verify the number
 	$customer = Customer::where('number', $request->from)->first();
-	
+
 	if( is_null($customer) )
 		return make_response('Number not registered. Please call with registered number.');
 
