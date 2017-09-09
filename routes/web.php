@@ -88,7 +88,8 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "timeOut" => "5",
-            "eventUrl" => [config('app.url') . '/menu']
+            "eventUrl" => [config('app.url') . '/menu'],
+            "bargeIn" => true
         ];
   	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance, Press 3 for", $ncco );
 });
@@ -105,7 +106,8 @@ Route::post('/menu', function(Request $request){
         "action" => "input",
         "submitOnHash" => "true",
         "timeOut" => "5",
-        "eventUrl" => [config('app.url') . '/menu']
+        "eventUrl" => [config('app.url') . '/menu'],
+        "bargeIn" => true
     ];
 
 	$dtmf = $request->dtmf;
@@ -140,7 +142,8 @@ Route::post('/transaction', function(Request $request){
         "action" => "input",
         "submitOnHash" => "true",
         "timeOut" => "5",
-        "eventUrl" => [config('app.url') . '/transaction']
+        "eventUrl" => [config('app.url') . '/transaction'],
+        "bargeIn" => true
     ];
 
     $dtmf = $request->dtmf;
@@ -179,7 +182,8 @@ Route::post('/transaction_receiver', function(Request $request){
         "action" => "input",
         "submitOnHash" => "true",
         "timeOut" => "10",
-        "eventUrl" => [config('app.url') . '/transaction_receiver']
+        "eventUrl" => [config('app.url') . '/transaction_receiver'],
+        "bargeIn" => true
     ];
 
     $dtmf = $request->dtmf;
