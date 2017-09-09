@@ -157,7 +157,7 @@ Route::post('/transaction', function(Request $request){
     $transaction->conversation_id = $conversation->id;
     $transaction->customer_id = $conversation->customer->id;
     $transaction->amount = $dtmf;
-    $transaction->number = $conversation->customer->number;
+    $transaction->number = 0;
     $transaction->reciever_id = 0;
     $transaction->save();
 
