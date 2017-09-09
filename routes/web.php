@@ -118,6 +118,7 @@ Route::post('/menu', function(Request $request){
 		case '1': 
 			$text = "Enter the amonut to transfer";
 			$ncco["eventUrl"] = [config('app.url') . '/transaction'];
+			$ncco["timeOut"] = "15";
 		break;
 
 		case '2':
