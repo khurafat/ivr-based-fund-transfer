@@ -56,7 +56,9 @@ Route::get('/answer', function (Request $request)
 	$ncco = [
             	"action" => "input",
             	"submitOnHash" => "true",
-            	"eventUrl" => [config('app.url') . '/auth']
+            	"eventUrl" => [config('app.url') . '/auth'],
+            	"timeOut" => "10",
+            	"bargeIn" => true
             ];
 
   	return make_response("Welcome to mPay. Please type your t pin", $ncco);
@@ -73,7 +75,9 @@ Route::post('/auth', function (Request $request)
 		$ncco =  [
             "action" => "input",
             "submitOnHash" => "true",
-            "eventUrl" => [config('app.url') . '/auth']
+            "eventUrl" => [config('app.url') . '/auth'],
+            "timeOut" => "10",
+            "bargeIn" => true
         ];
 		return make_response("Invalid t pin. Please try again.", $ncco);
 	}
