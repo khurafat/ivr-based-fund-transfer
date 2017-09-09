@@ -158,6 +158,7 @@ Route::post('/transaction', function(Request $request){
     $transaction->customer_id = $conversation->customer->id;
     $transaction->amount = $dtmf;
     $transaction->number = $conversation->customer->number;
+    $transaction->reciever_id = 0;
     $transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
@@ -190,7 +191,7 @@ Route::post('/transaction_receiver', function(Request $request){
 
     $transaction = $conversation->transaction;
 
-   	$transaction->receiver_id = $customer->id;
+   	$transaction->reciever_id = $customer->id;
    	$transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
