@@ -15,7 +15,7 @@ class AlterTransactionsRecIdTable extends Migration
     {
         Schema::table('transactions', function (Blueprint $table) {
             //
-            $table->unsignedInteger('receiver_id')->nullable()->chnage();
+            $table->unsignedInteger('receiver_id')->nullable()->change();
         });
     }
 
