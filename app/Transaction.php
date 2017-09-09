@@ -16,6 +16,6 @@ class Transaction extends Model
     }
     public function conversation()
     {
-    	return $this->hasMany('App\Conversation');
+    	return $this->belongsTo('App\Conversation');
     }
 }

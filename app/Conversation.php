@@ -12,10 +12,10 @@ class Conversation extends Model
     ];
     public function transaction()
     {
-    	return $this->belongsTo('App\Transaction');
+    	return $this->hasOne('App\Transaction');
     }
     public function customer()
     {
-    	return $this->hasOne('App\Customer');
+    	return $this->belongsTo('App\Customer');
     }
 }
