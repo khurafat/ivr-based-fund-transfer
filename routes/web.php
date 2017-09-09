@@ -87,7 +87,7 @@ Route::post('/auth', function (Request $request)
     	[
             "action" => "input",
             "submitOnHash" => "true",
-            "timeOut" => "10",
+            "timeOut" => "5",
             "eventUrl" => [config('app.url') . '/menu']
         ];
   	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance, Press 3 for", $ncco );
@@ -104,19 +104,12 @@ Route::post('/menu', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "10",
+        "timeOut" => "5",
         "eventUrl" => [config('app.url') . '/menu']
     ];
 
 	$dtmf = $request->dtmf;
 	if( $dtmf > '5' || $dtmf < '1'){
-		$ncco = 
-    	[
-            "action" => "input",
-            "submitOnHash" => "true",
-            "timeOut" => "10",
-            "eventUrl" => [config('app.url') . '/menu']
-        ];
 		return make_response("Invalid Choice, Please try again", $ncco);
 	}
 	switch($dtmf){
@@ -146,7 +139,7 @@ Route::post('/transaction', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "10",
+        "timeOut" => "5",
         "eventUrl" => [config('app.url') . '/transaction']
     ];
 
