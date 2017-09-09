@@ -13,7 +13,7 @@ class Identity{
 	public $isnull = true;
 
 	public function __construct($number){
-		$customer = Customer::where('number', $request->from)->first();
+		$customer = Customer::where('number', $number)->first();
 		if( !is_null($customer) ){
 			$this->profile = $customer;
 			$this->isnull = false;
