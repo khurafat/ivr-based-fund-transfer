@@ -87,9 +87,49 @@ Route::post('/auth', function (Request $request)
     	[
             "action" => "input",
             "submitOnHash" => "true",
-            "eventUrl" => ["https://example.com/ivr"]
+            "timeOut" => "10",
+            "eventUrl" => [config('app.url') . '/menu']
         ];
-  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
+  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance, Press 3 for", $ncco );
 });
 
+Route::post('/menu', function(Request $request){
+	// TODO: Check if authorized
+	$identity = new Identity($request->from);
+	$conversation_id = $request->conversation_uuid;
+	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+								->first();
+
+	$ncco = 
+	[
+        "action" => "input",
+        "submitOnHash" => "true",
+        "timeOut" => "10",
+        "eventUrl" => [config('app.url') . '/menu']
+    ];
+
+	$dtmf = $request->dtmf;
+	if( $dtmf > '5' || $dtmf < '1'){
+		$ncco = 
+    	[
+            "action" => "input",
+            "submitOnHash" => "true",
+            "timeOut" => "10",
+            "eventUrl" => [config('app.url') . '/menu']
+        ];
+		return make_response("Invalid Choice, Please try again", $ncco);
+	}
+	switch($dtmf){
+		case '1': 
+			$text = "Enter the amonut to transfer";
+		break;
+		case '2':
+			$text = " You Balance is ". $conversation->customer->balance;
+		break;
+
+	}
+
+	return make_response($text, $ncco);
+
+});
 
