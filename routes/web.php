@@ -131,6 +131,8 @@ Route::post('/menu', function(Request $request){
 
 });
 
+
+
 Route::post('/transaction', function(Request $request){
 	// TODO: Check if authorized
 	$identity = new Identity($request->from);
@@ -205,5 +207,18 @@ Route::post('/transaction_receiver', function(Request $request){
 });
 
 
+Route::post('/log', function(Request $request){
+	//log
+	$conversation_id = $request->conversation_uuid;
+	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+								->first();
+	$customer_id = $conversation->customer->id;
+	$uuid = $request->uuid;
+	$number = $conversation->customer->number;
+	$direction = $request->direction;
+	$status = $request->status;
+	$raw_data = json_encode($request->all());
 
+	return 1;
 
+});
