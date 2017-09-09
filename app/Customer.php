@@ -14,5 +14,11 @@ class Customer extends Model
     public function conversation()
     {
     	return $this->hasOne('App\Conversation');
+
+    }
+    
+    public function transaction()
+    {
+    	return $this->hasMany('App\Transaction');
     }
 }
