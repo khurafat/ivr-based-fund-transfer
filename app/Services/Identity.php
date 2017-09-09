@@ -25,6 +25,8 @@ class Identity{
 		$customer = Customer::where('tpin', $tpin)->first();
 		if( !is_null($customer) ){
 			$this->auth = true;
+			$conv = $customer->conversation();
+			$conv->update(['authorized' => true]);
 		}
 	}
 

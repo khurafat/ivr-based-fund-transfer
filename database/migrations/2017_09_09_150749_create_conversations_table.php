@@ -17,6 +17,7 @@ class CreateConversationsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('customer_id');
             $table->string('conversation_id', 256);
+            $table->boolean('authorized')->default(false);
             $table->integer('last_input')->nullable();
             $table->timestamps();
         });

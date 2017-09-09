@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Services\Identity;
 use App\Customer;
 use App\Conversation;
+use App\Transaction;
 
 Route::get('/', function () {
     return view('welcome');
@@ -57,7 +58,7 @@ Route::get('/answer', function (Request $request)
             	"action" => "input",
             	"submitOnHash" => "true",
             	"eventUrl" => [config('app.url') . '/auth'],
-            	"timeOut" => "10",
+            	"timeOut" => "15",
             	"bargeIn" => true
             ];
 
@@ -76,7 +77,7 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => [config('app.url') . '/auth'],
-            "timeOut" => "10",
+            "timeOut" => "15",
             "bargeIn" => true
         ];
 		return make_response("Invalid t pin. Please try again.", $ncco);
