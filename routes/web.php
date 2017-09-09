@@ -68,22 +68,23 @@ Route::get('/answer', function (Request $request)
 Route::post('/auth', function (Request $request)
 {
 	$identity = new Identity($request->from);
+	$identity->authenticate($request->dtmf);
+	if( !$identity->auth ){
+		$ncco =  [
+            "action" => "input",
+            "submitOnHash" => "true",
+            "eventUrl" => [config('app.url') . '/auth']
+        ];
+		return make_response("Invalid t pin. Please try again.", $ncco);
+	}
 
-	$dtmf = $request->dtmf;
-
-	$ncco = [
-    	[
-      		'action' => 'talk',
-      		'voiceName' => 'Jennifer',
-    		'text' => 'Hello, thank you for calling. This is Jennifer from Nexmo. Ciao.'
-    	],
+	$ncco = 
     	[
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => ["https://example.com/ivr"]
-        ]
-  	];
-  	return make_response($dtmf, $ncco );
+        ];
+  	return make_response("Ab menu aayega", $ncco );
 });
 
 
