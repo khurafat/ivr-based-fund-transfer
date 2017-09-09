@@ -122,7 +122,7 @@ Route::post('/menu', function(Request $request){
 
 		case '2':
 			$text = " You Balance is ". $conversation->customer->balance;
-			$text .= ". Press 1 to transfer money, 2 to check your balance, 3 to check tranaction history, 4 to change your pin".;
+			$text .= ". Press 1 to transfer money, 2 to check your balance, 3 to check tranaction history, 4 to change your pin.";
 		break;
 
 	}
