@@ -19,8 +19,8 @@ class CreateCustomersTable extends Migration
             $table->string('last_name');
             $table->integer('number');
             $table->double('balance', 9, 2);
-            $table->integer('tpin', 4);
-            $table->integer('language', 2);
+            $table->integer('tpin');
+            $table->integer('language');
             $table->timestamps();
         });
     }
