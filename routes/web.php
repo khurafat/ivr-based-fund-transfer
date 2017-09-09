@@ -89,7 +89,7 @@ Route::post('/auth', function (Request $request)
             "submitOnHash" => "true",
             "eventUrl" => ["https://example.com/ivr"]
         ];
-  	return make_response("Ab menu aayega", $ncco );
+  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
 
 
