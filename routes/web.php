@@ -13,6 +13,8 @@
 
 use Illuminate\Http\Request;
 use App\Services\Identity;
+use App\Customer;
+use App\Conversation;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,18 +39,19 @@ function make_response($message, $next = null){
 Route::get('/answer', function (Request $request)
 {
 	// Verify the number
-	$customer = Customer::where(['from', $request->from])->first();
+	$customer = Customer::where('number', $request->from)->first();
 	
-	if( $customer->isEmpty() )
+	if( is_null($customer) )
 		return make_response('Number not registered. Please call with registered number.');
 
-	$converation_id = $request->conversation_uuid;
-	
-	$conversation = Conversation::create([
-						'customer_id' => $customer->id,
-						'conversation_id' => $conversation_id,
-						'last_input' => ''
-					]);
+	$conversation_id = $request->conversation_uuid;
+	$conversation = new Conversation;
+
+	$conversation->customer_id = $customer->id;
+	$conversation->conversation_id = $conversation_id;
+	$conversation->last_input = 0;
+
+	$conversation->save();
 
 	$ncco = [
             	"action" => "input",
