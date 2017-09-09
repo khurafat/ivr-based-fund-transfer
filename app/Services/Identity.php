@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Identity;
+namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Services\Identity;
