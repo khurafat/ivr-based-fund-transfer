@@ -92,7 +92,7 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => [config('app.url') . '/auth'],
-            "timeOut" => 15
+            "timeOut" => 5
         ];
 		return make_response("Invalid t pin entered, Please try again. Please enter your four digit t pin", $ncco);
 	}
