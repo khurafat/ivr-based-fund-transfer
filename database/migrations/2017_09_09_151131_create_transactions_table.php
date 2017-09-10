@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->string('conversation_id', 256);
             $table->unsignedInteger('customer_id');
             $table->double('amount', 9, 2);
-            $table->integer('number');
+            $table->string('number', 12);
             $table->unsignedInteger('reciever_id')->nullable();
             $table->smallInteger('status')->default(0);
             $table->timestamps();

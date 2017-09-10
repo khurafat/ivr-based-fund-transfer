@@ -17,10 +17,11 @@ class CreateCustomersTable extends Migration
             $table->increments('id');
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('number');
+            $table->string('number');
+            $table->boolean('enabled')->default(false);
             $table->double('balance', 9, 2);
             $table->integer('tpin');
-            $table->integer('language');
+            $table->string('language',2)->default('en');
             $table->timestamps();
         });
     }
