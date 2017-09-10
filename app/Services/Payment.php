@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\Identity;
+use App\Conversation;
 
 class Payment{
 
