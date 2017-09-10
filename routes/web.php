@@ -22,15 +22,20 @@ use App\Services\Payment;
 
 
 function make_response($message, $next = null, $bargIn = true, $loop = 2, $eventUrl = null) {
+
+    $temp = [
+        'action' => 'talk',
+        'voiceName' => 'Raveena',
+        'text' => "$message",
+        "bargeIn" => $bargIn,
+        "loop"  =>  $loop,
+    ];
+
+    if (!is_null($eventUrl)) {
+        $temp["eventUrl"]  =[config('app.url') . $eventUrl];
+    }
 	$data = [
-		[
-      		'action' => 'talk',
-      		'voiceName' => 'Raveena',
-    		'text' => "$message",
-            "bargeIn" => $bargIn,
-            "loop"  =>  $loop,
-            "eventUrl"  =>[config('app.url') . $eventUrl]
-    	],
+		$temp
 	];
 	if( !is_null($data) ){
 		$data[] = $next;
@@ -65,7 +70,7 @@ Route::get('/answer', function (Request $request)
 	$conversation->save();
 
 	if( !$customer->enabled )
-		return make_response("Please first create t pin. Enter a 4 digit number", $ncco);
+		return make_response("Please first create t pin. Enter a four digit number", $ncco);
 
 	$ncco = [
             	"action" => "input",
@@ -74,7 +79,7 @@ Route::get('/answer', function (Request $request)
             	"timeOut" => 10
             ];
 
-  	return make_response("Welcome to m Pay. Please enter your 4 digit t pin", $ncco);
+  	return make_response("Welcome to m Pay. Please enter your four digit t pin", $ncco);
 });
 
 
@@ -89,13 +94,19 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => [config('app.url') . '/auth'],
-            "timeOut" => "15"
+            "timeOut" => 15
         ];
-		return make_response("Invalid t pin entered. Please try again. Please enter your 4 digit t pin", $ncco);
+		return make_response("Invalid t pin entered, Please try again. Please enter your four digit t pin", $ncco);
 	}
 
-
-  	return make_response("Thanks for confirming your account.", null, false, 1,   '/menu' );
+    $ncco =
+        [
+            "action" => "input",
+            "submitOnHash" => true,
+            "timeOut" => 15,
+            "eventUrl" => [config('app.url') . '/choice'],
+        ];
+  	return make_response("Thank you for confirming your account, Press 1 to Transfer Money, Press 2 to check balance", $ncco, true, 1 );
 });
 
 Route::post('/menu', function (Request $request)
@@ -155,12 +166,12 @@ Route::post('/choice', function(Request $request) {
         "submitOnHash" => true,
         "timeOut" => 5,
         "maxDigits" => 1,
-        "eventUrl" => [config('app.url') . '/menu'],
+        "eventUrl" => [config('app.url') . '/choice'],
     ];
 
 	$dtmf = $request->dtmf;
 	if( $dtmf > '2' || $dtmf < '1'){
-		return make_response("Invalid Choice, Please try again", $ncco);
+		return make_response("Invalid Choice, Please try again, Press 1 to Transfer Money, Press 2 to check balance", $ncco);
 	}
 	switch($dtmf){
 		case '1': 
