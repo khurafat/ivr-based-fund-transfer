@@ -25,7 +25,7 @@ function make_response($message, $next = null){
 	$data = [
 		[
       		'action' => 'talk',
-      		'voiceName' => 'Jennifer',
+      		'voiceName' => 'Raveena',
     		'text' => "$message"
     	],
 	];
@@ -42,7 +42,7 @@ Route::get('/answer', function (Request $request)
 	$customer = Customer::where('number', $request->from)->first();
 
 	if( is_null($customer) )
-		return make_response('Number not registered. Please call with registered number.');
+		return make_response('Number not registered. Please call from registered number.');
 
 	$ncco = [
             	"action" => "input",
@@ -69,7 +69,7 @@ Route::get('/answer', function (Request $request)
             	"action" => "input",
             	"submitOnHash" => "true",
             	"eventUrl" => [config('app.url') . '/auth'],
-            	"timeOut" => "15",
+            	"timeOut" => "10",
             	"bargeIn" => true
             ];
 
@@ -102,7 +102,7 @@ Route::post('/auth', function (Request $request)
             "eventUrl" => [config('app.url') . '/menu'],
             "bargeIn" => true
         ];
-  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance, Press 3 for", $ncco );
+  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
 
 Route::post('/generate', function (Request $request)
@@ -130,7 +130,7 @@ Route::post('/generate', function (Request $request)
 });
 
 Route::post('/menu', function(Request $request){
-	// TODO: Check if authorized
+	// TODO: Check if authorized for given conversation_uuid
 	$identity = new Identity($request->from);
 	$conversation_id = $request->conversation_uuid;
 	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
@@ -139,26 +139,27 @@ Route::post('/menu', function(Request $request){
 	$ncco = 
 	[
         "action" => "input",
-        "submitOnHash" => "true",
+        "submitOnHash" => true,
         "timeOut" => "5",
         "eventUrl" => [config('app.url') . '/menu'],
         "bargeIn" => true
     ];
 
 	$dtmf = $request->dtmf;
-	if( $dtmf > '5' || $dtmf < '1'){
+	if( $dtmf > '2' || $dtmf < '1'){
 		return make_response("Invalid Choice, Please try again", $ncco);
 	}
 	switch($dtmf){
 		case '1': 
-			$text = "Enter the amonut to transfer";
+			$text = "Enter the amount to transfer";
 			$ncco["eventUrl"] = [config('app.url') . '/transaction'];
 			$ncco["timeOut"] = "15";
 		break;
 
 		case '2':
-			$text = " You Balance is ". $conversation->customer->balance;
-			$text .= ". Press 1 to transfer money, 2 to check your balance, 3 to check tranaction history, 4 to change your pin.";
+			$text = " You Balance is ". $conversation->customer->balance . " rupees";
+			// TODO: Redirect back to menu
+			$text .= ". Press 1 to transfer money, 2 to check your balance, 3 to check transaction history, 4 to change your pin.";
 		break;
 
 	}
@@ -181,6 +182,7 @@ Route::post('/transaction', function(Request $request){
         "action" => "input",
         "submitOnHash" => "true",
         "timeOut" => "15",
+        "maxDigits" => "5",
         "eventUrl" => [config('app.url') . '/transaction'],
         "bargeIn" => true
     ];
@@ -188,12 +190,12 @@ Route::post('/transaction', function(Request $request){
     $dtmf = $request->dtmf;
 
     if($dtmf < 1)
-    	return make_response("Please enter the valid amount", $ncco);
+    	return make_response("Please enter a valid amount", $ncco);
 
     $balance = $conversation->customer->balance;
 
     if($dtmf > $balance)
-    	return make_response("Enter amount is greater than balance. Try Again.", $ncco);
+    	return make_response("You have insufficient funds for this transaction. Please, try again.", $ncco);
 
     $transaction = new Transaction;
     $transaction->conversation_id = $conversation->id;
@@ -221,14 +223,15 @@ Route::post('/transaction_receiver', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "30",
+        "maxDigits" => "10",
+        "timeOut" => "20",
         "eventUrl" => [config('app.url') . '/transaction_receiver'],
         "bargeIn" => true
     ];
 
     $dtmf = $request->dtmf;
 
-    $customer = Customer::where('number', $dtmf)->first();
+    $customer = Customer::where('number', 'LIKE' , '%' . $dtmf)->first();
 
 	if( is_null($customer) )
 		return make_response('Number not associated with any account. Try again.', $ncco);
@@ -243,7 +246,7 @@ Route::post('/transaction_receiver', function(Request $request){
 
 	$amount = $transaction->amount;
 	$user = $customer->number;
-    return make_response("You are transferring $amount to $user. Press 1 to confirm.", $ncco);
+    return make_response("You are transferring $amount rupees to $user. Press 1 to confirm and any other key to cancel", $ncco);
 });
 
 Route::post('/transaction_confirmation', function(Request $request){
@@ -265,15 +268,15 @@ Route::post('/transaction_confirmation', function(Request $request){
 	
 	if( $dtmf == '1'){
 		Payment::makePayment($conversation_id);
-		return make_response('Your transaction is complete. Thankyou', $ncco);
+		return make_response('Your transaction is complete. Thankyou for using our service.', $ncco);
 	}
 	else
-		return make_response('You declined to confirm the transaction', $ncco);
+		return make_response('Your transaction has been cancelled.', $ncco);
 
 });
 
 
-Route::post('/log', function(Request $request){
+Route::post('/logger', function(Request $request){
 	//log
 	$logger = new Logger;
 	$logger->conversation_id = $request->conversation_uuid;
