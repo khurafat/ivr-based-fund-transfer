@@ -15,7 +15,7 @@ class AlterCustomersAddEnableTable extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             //
-            $table->boolean('enable')->default(false);
+            $table->boolean('enabled')->default(false);
         });
     }
 
