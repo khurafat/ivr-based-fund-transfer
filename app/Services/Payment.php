@@ -13,7 +13,6 @@ class Payment{
 		
 		if( !is_null($conversation) ){
 			if($conversation->authorized==1){
-				dd($conversation->id);
 				$transaction = $conversation->transaction;
 				$amount = $transaction->amount;
 				$customer = $transaction->customer;
@@ -21,7 +20,6 @@ class Payment{
 				$receiver = Customer::where('id', $receiver_id)->first();
 				$new_amount = $customer->balance - floatval($amount);
 				$customer->update(['balance' => $new_amount]);
-				dd($receiver_id);
 				$receiver->balance += floatval($amount);
 				$receiver->save();
 				return true;
