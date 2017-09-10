@@ -37,7 +37,7 @@
                               <p><strong>Aadhaar: </strong> -------- </p>
                               <ul class="list-unstyled">
                                 <li><i class="fa fa-building"></i> Address: </li>
-                                <li><i class="fa fa-phone"></i> Phone #: </li>
+                                <li><i class="fa fa-phone"></i> Phone #: {{$customer->number}}</li>
                               </ul>
                             </div>
                             <div class="right col-xs-5 text-center">
