@@ -236,6 +236,6 @@ Route::get('blade', function(){
 	return view('index')->withCustomers(Customer::all());
 });
 
-Route::get('blade', function(){
+Route::get('blade2', function(){
 	return view('user')->withCustomers(Customer::all());
 });
