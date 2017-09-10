@@ -13,6 +13,7 @@ class Payment{
 		
 		if( !is_null($conversation) ){
 			if($conversation->authorized==1){
+				dd($conversation->id);
 				$transaction = $conversation->transaction;
 				$amount = $transaction->amount;
 				$customer = $transaction->customer;
