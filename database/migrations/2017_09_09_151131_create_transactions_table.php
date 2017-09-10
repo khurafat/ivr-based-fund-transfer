@@ -19,7 +19,8 @@ class CreateTransactionsTable extends Migration
             $table->unsignedInteger('customer_id');
             $table->double('amount', 9, 2);
             $table->integer('number');
-            $table->unsignedInteger('reciever_id');
+            $table->unsignedInteger('reciever_id')->nullable();
+            $table->smallInteger('status')->default(0);
             $table->timestamps();
         });
     }
