@@ -258,5 +258,5 @@ Route::get('/', function(){
 });
 
 Route::get('/customers/{id}', function($id){
-	return view('user')->withTransactions(Customer::find($id)->transaction());
+	return view('user')->withCustomer(Customer::find($id));
 });
