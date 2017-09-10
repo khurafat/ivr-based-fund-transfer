@@ -289,7 +289,7 @@ Route::post('/transaction_receiver', function(Request $request){
 	$ncco["timeOut"] = "5";
 
 	$amount = $transaction->amount;
-	$user = $customer->number;
+	$user = implode(" ", str_split($customer->number));
     return make_response("You are transferring $amount rupees to $user. Press 1 to confirm and any other key to cancel", $ncco);
 });
 
@@ -311,7 +311,7 @@ Route::post('/transaction_confirmation', function(Request $request){
 	
 	if( $dtmf == '1'){
 		Payment::makePayment($conversation_id);
-		return make_response('Your transaction is complete. Thankyou for using our service.', $ncco, false);
+		return make_response('Your transaction is complete. Thankyou for using m Pay.', $ncco, false);
 	}
 	else
 		return make_response('Your transaction has been cancelled.', $ncco, false);
