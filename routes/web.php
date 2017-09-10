@@ -73,7 +73,7 @@ Route::get('/answer', function (Request $request)
             	"bargeIn" => true
             ];
 
-  	return make_response("Welcome to mPay. Please type your t pin", $ncco);
+  	return make_response("Welcome to mPay. Please enter your 4 digit t pin", $ncco);
 });
 
 
@@ -91,7 +91,7 @@ Route::post('/auth', function (Request $request)
             "timeOut" => "15",
             "bargeIn" => true
         ];
-		return make_response("Invalid t pin. Please try again.", $ncco);
+		return make_response("Invalid t pin entered. Please try again. Please enter your 4 digit t pin", $ncco);
 	}
 
 	$ncco = 
@@ -102,7 +102,7 @@ Route::post('/auth', function (Request $request)
             "eventUrl" => [config('app.url') . '/menu'],
             "bargeIn" => true
         ];
-  	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
+  	return make_response("Thanks for the confirming your account, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
 
 Route::post('/generate', function (Request $request)
@@ -141,6 +141,7 @@ Route::post('/menu', function(Request $request){
         "action" => "input",
         "submitOnHash" => true,
         "timeOut" => "5",
+        "maxDigits" => "5",
         "eventUrl" => [config('app.url') . '/menu'],
         "bargeIn" => true
     ];
@@ -151,7 +152,7 @@ Route::post('/menu', function(Request $request){
 	}
 	switch($dtmf){
 		case '1': 
-			$text = "Enter the amount to transfer";
+			$text = "Enter the amount you want to transfer";
 			$ncco["eventUrl"] = [config('app.url') . '/transaction'];
 			$ncco["timeOut"] = "15";
 		break;
@@ -159,13 +160,47 @@ Route::post('/menu', function(Request $request){
 		case '2':
 			$text = " You Balance is ". $conversation->customer->balance . " rupees";
 			// TODO: Redirect back to menu
-			$text .= ". Press 1 to transfer money, 2 to check your balance, 3 to check transaction history, 4 to change your pin.";
+            $ncco["eventUrl"] = [config('app.url') . '/back-to-menu'];
+			$text .= ". Press * to go back to main menu OR Press any other key to disconnect";
 		break;
 
 	}
 
 	return make_response($text, $ncco);
 
+});
+
+Route::post('/back-to-menu', function(Request $request){
+    // TODO: Check if authorized for given conversation_uuid
+    $identity = new Identity($request->from);
+    $conversation_id = $request->conversation_uuid;
+    $conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+        ->first();
+
+    $ncco =
+        [
+            "action" => "input",
+            "submitOnHash" => true,
+            "timeOut" => "5",
+            "maxDigits" => "1",
+            "eventUrl" => [config('app.url') . '/menu'],
+            "bargeIn" => true
+        ];
+
+    $dtmf = $request->dtmf;
+    if( $dtmf != '*'){
+        return make_response("Thankyou for using mPay.");
+    }
+
+    $ncco =
+        [
+            "action" => "input",
+            "submitOnHash" => "true",
+            "timeOut" => "5",
+            "eventUrl" => [config('app.url') . '/menu'],
+            "bargeIn" => true
+        ];
+    return make_response("Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
 
 
@@ -208,7 +243,7 @@ Route::post('/transaction', function(Request $request){
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
 	$ncco["timeOut"] = "30";
 
-    return make_response("Please enter the receiver number", $ncco);
+    return make_response("Please enter the receiver's mobile number", $ncco);
 });
 
 
@@ -242,7 +277,7 @@ Route::post('/transaction_receiver', function(Request $request){
    	$transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_confirmation'];
-	$ncco["timeOut"] = "10";
+	$ncco["timeOut"] = "5";
 
 	$amount = $transaction->amount;
 	$user = $customer->number;
