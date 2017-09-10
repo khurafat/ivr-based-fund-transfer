@@ -26,7 +26,7 @@
       @foreach ($customers as $customer)
 
         <tr>
-          <td class="link"><b><a href="/customer/{{$customer->id}}">{{$customer->id}}</a></b></td>
+          <td class="link"><b><a href="/customers/{{$customer->id}}">{{$customer->id}}</a></b></td>
           <td><b>{{$customer->first_name}}</b></td>
           <td><b>{{$customer->last_name}}</b></td>
           <td><b>{{$customer->number}}</b></td>
