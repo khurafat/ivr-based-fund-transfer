@@ -17,9 +17,6 @@ use App\Customer;
 use App\Conversation;
 use App\Transaction;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 function make_response($message, $next = null){
@@ -232,10 +229,10 @@ Route::post('/log', function(Request $request){
 
 });
 
-Route::get('blade', function(){
+Route::get('/', function(){
 	return view('index')->withCustomers(Customer::all());
 });
 
-Route::get('blade2', function(){
+Route::get('/customer', function(){
 	return view('user')->withCustomers(Customer::all());
 });
