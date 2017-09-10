@@ -16,7 +16,7 @@ class Payment{
 				$transaction = $conversation->transaction;
 				$amount = $transaction->amount;
 				$customer = $transaction->customer;
-				$receiver_id = $transaction->receiver_id;
+				$receiver_id = $transaction->reciever_id;
 				$receiver = Customer::where('id', $receiver_id)->first();
 				$new_amount = $customer->balance - floatval($amount);
 				$customer->update(['balance' => $new_amount]);
