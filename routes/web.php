@@ -123,7 +123,7 @@ Route::post('/generate', function (Request $request)
 	if(strlen($dtmf) != 4)
 		return make_response("Invalid t pin, try again", $necco);
 
-	$conversation->customer->update(['tpin' => $dtmf]);
+	$conversation->customer->update(['tpin' => $dtmf, 'enabled' => true]);
 
 	$ncco['eventUrl'] = [config('app.url') . '/auth'];
 	return make_response("Your pin has been generated. Please use this pin to authorize", $ncco);
