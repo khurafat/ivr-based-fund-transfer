@@ -31,13 +31,11 @@
 <div class="col-md-4 col-sm-4 col-xs-12 profile_details">
                         <div class="well profile_view">
                           <div class="col-sm-12">
-                            <h4 class="brief"><i>---USER---</i></h4>
+                            <h4 class="brief"><i>Customer id {{$customer->id}}></h4>
                             <div class="left col-xs-7">
-                              <h2>---name---</h2>
-                              <p><strong>Aadhaar: </strong> -------- </p>
+                              <h2>{{$customer->first_name}}</h2>
                               <ul class="list-unstyled">
-                                <li><i class="fa fa-building"></i> Address: </li>
-                                <li><i class="fa fa-phone"></i> Phone #: </li>
+                                <li><i class="fa fa-phone"></i> Phone #: {{$customer->number}}</li>
                               </ul>
                             </div>
                             <div class="right col-xs-5 text-center">
@@ -62,17 +60,17 @@
 <div class="row tile_count">
             <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Balance</span>
-              <div class="count">2500</div>
+              <div class="count">{{$customer->balance}}</div>
               
             </div>
             <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-clock-o"></i> Last Transaction</span>
-              <div class="count">123.50</div>
+              <div class="count">{{}}</div>
               
             </div>
              <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-clock-o"></i> Amount transferred</span>
-              <div class="count">123.50</div>
+              <div class="count"></div>
               
             </div>
             <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
@@ -119,31 +117,20 @@
                             <table class="table table-bordered">
                               <thead>
                                 <tr>
-                                  <th>#</th>
-                                  <th>First Name</th>
-                                  <th>Last Name</th>
-                                  <th>Username</th>
+                                  <th>ID</th>
+                                  <th>Amount</th>
+                                  <th>Reciever Id</th>
+                                  <th>Status</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 <tr>
-                                  <th scope="row">1</th>
-                                  <td>Mark</td>
-                                  <td>Otto</td>
-                                  <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">2</th>
-                                  <td>Jacob</td>
-                                  <td>Thornton</td>
-                                  <td>@fat</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">3</th>
-                                  <td>Larry</td>
-                                  <td>the Bird</td>
-                                  <td>@twitter</td>
-                                </tr>
+                                @foreach($customer->tansaction() as $transaction)
+                                  <th scope="row">{{transaction->id}}</th>
+                                  <td>{{transaction->amount}}</td>
+                                  <td>{{transaction->receiver_id}}</td>
+                                  <td>{{transaction->status}}</td>
+                              @endforeach
                               </tbody>
                             </table>
                           </div>
