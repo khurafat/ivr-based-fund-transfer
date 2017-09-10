@@ -10,7 +10,7 @@ class Payment{
 	public static function makePayment($conversation_id){
 		$conversation = Conversation::where('conversation_id', $conversation_id)->first();
 		
-		if( !is_null($transaction) ){
+		if( !is_null($conversation) ){
 			if($conversation->authorized==1){
 				$transaction = $conversation->transaction;
 				$amount = $transaction->amount;
