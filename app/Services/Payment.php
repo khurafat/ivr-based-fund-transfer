@@ -9,7 +9,7 @@ use App\Customer;
 class Payment{
 
 	public static function makePayment($conversation_id){
-		$conversation = Conversation::where('conversation_id', $conversation_id)->first();
+		$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')->first();
 		
 		if( !is_null($conversation) ){
 			if($conversation->authorized==1){
