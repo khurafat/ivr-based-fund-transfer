@@ -125,7 +125,7 @@
                               </thead>
                               <tbody>
                                 <tr>
-                                @foreach($customer->tansactions as $transaction)
+                                @foreach($customer->transaction() as $transaction)
                                   <th scope="row">{{$transaction->id}}</th>
                                   <td>{{$transaction->amount}}</td>
                                   <td>{{$transaction->receiver_id}}</td>
