@@ -26,12 +26,12 @@
       @foreach ($customers as $customer)
 
         <tr>
-          <td><b>{{customer->id}}</b></td>
-          <td><b>{{customer->first_name}}</b></td>
-          <td><b>{{customer->last_name}}</b></td>
-          <td><b>{{customer->number}}</b></td>
-          <td><b>{{customer->balance}}</b></td>
-          <td><b>{{customer->language}}</b></td>
+          <td><b>{{$customer->id}}</b></td>
+          <td><b>{{$customer->first_name}}</b></td>
+          <td><b>{{$customer->last_name}}</b></td>
+          <td><b>{{$customer->number}}</b></td>
+          <td><b>{{$customer->balance}}</b></td>
+          <td><b>{{$customer->language}}</b></td>
         </tr>
         @endforeach
       </tbody>
