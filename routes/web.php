@@ -125,8 +125,8 @@ Route::post('/generate', function (Request $request)
 
 	$conversation->customer->update(['tpin' => $dtmf]);
 
-	$necco['eventUrl'] = [config('app.url') . '/auth'];
-	return make_response("Your pin has been generated. Please use this pin to authorize", $necco);
+	$ncco['eventUrl'] = [config('app.url') . '/auth'];
+	return make_response("Your pin has been generated. Please use this pin to authorize", $ncco);
 });
 
 Route::post('/menu', function(Request $request){
