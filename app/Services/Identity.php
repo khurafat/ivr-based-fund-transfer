@@ -22,8 +22,9 @@ class Identity{
 		}
 	}
 
-	public function authenticate($tpin){
-		$customer = Customer::where('tpin', $tpin)->first();
+	public function authenticate($tpin, $convId){
+        $convO = Conversation::where('conversation_id', $convId)->orderBy('id',                                                'DESC')->first();
+		$customer = Customer::where('tpin', $tpin)->where("id", $convO->customer_id)->first();
 		if( !is_null($customer) ){
 			$this->auth = true;
             $conv = Conversation::where('customer_id', $customer->id)->orderBy('id',                                                'DESC')->first();

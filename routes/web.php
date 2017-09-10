@@ -86,7 +86,7 @@ Route::get('/answer', function (Request $request)
 Route::post('/auth', function (Request $request)
 {
 	$identity = new Identity($request->from);
-	$identity->authenticate($request->dtmf);
+	$identity->authenticate($request->dtmf, $request->conversation_uuid);
 	if( !$identity->auth ){
 		$ncco =  [
             "action" => "input",
@@ -101,7 +101,7 @@ Route::post('/auth', function (Request $request)
         [
             "action" => "input",
             "submitOnHash" => true,
-            "timeOut" => 15,
+            "timeOut" => 5,
             "eventUrl" => [config('app.url') . '/choice'],
         ];
   	return make_response("Thank you for confirming your account, Press 1 to Transfer Money, Press 2 to check balance", $ncco, true, 1 );
@@ -163,7 +163,7 @@ Route::post('/choice', function(Request $request) {
         "action" => "input",
         "submitOnHash" => true,
         "timeOut" => 10,
-        "maxDigits" => 5,
+        "maxDigits" => 7,
         "eventUrl" => [config('app.url') . '/choice'],
     ];
 
@@ -208,8 +208,7 @@ Route::post('/back-to-menu', function(Request $request){
             "action" => "input",
             "submitOnHash" => true,
             "timeOut" => 5,
-            "eventUrl" => [config('app.url') . '/choice'],
-            "loop"     =>   2
+            "eventUrl" => [config('app.url') . '/choice']
         ];
     return make_response("Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
@@ -267,9 +266,9 @@ Route::post('/transaction_receiver', function(Request $request){
 	$ncco = 
 	[
         "action" => "input",
-        "submitOnHash" => "true",
-        "maxDigits" => "10",
-        "timeOut" => "20",
+        "submitOnHash" => true,
+        "maxDigits" => 10,
+        "timeOut" => 20,
         "eventUrl" => [config('app.url') . '/transaction_receiver']
     ];
 
