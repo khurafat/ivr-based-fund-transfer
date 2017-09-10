@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\Identity;
 use App\Conversation;
+use App\Customer;
 
 class Payment{
 
