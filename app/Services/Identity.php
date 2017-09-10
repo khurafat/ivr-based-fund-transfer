@@ -28,7 +28,9 @@ class Identity{
 		if( !is_null($customer) ){
 			$this->auth = true;
             $conv = Conversation::where('customer_id', $customer->id)->orderBy('id',                                                'DESC')->first();
-			$conv->update(['authorized' => true]);
+//			$conv->update(['authorized' => true]);
+			$conv->authorized = true;
+			$conv->save();
 		}
 	}
 
