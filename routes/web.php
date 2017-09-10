@@ -257,21 +257,21 @@ Route::post('/transaction_confirmation', function(Request $request){
 	$transaction = $conversation->transaction;
 	$dtmf = $request->dtmf;
 
-	$ncco = 
-	[
-        "action" => "input",
-        "submitOnHash" => "true",
-        "timeOut" => "30",
-        "eventUrl" => [config('app.url') . '/transaction_end'],
-        "bargeIn" => true
-    ];
+//	$ncco =
+//	[
+//        "action" => "input",
+//        "submitOnHash" => "true",
+//        "timeOut" => "5",
+//        "eventUrl" => [config('app.url') . '/transaction_end'],
+//        "bargeIn" => true
+//    ];
 	
 	if( $dtmf == '1'){
 		Payment::makePayment($conversation_id);
-		return make_response('Your transaction is complete. Thankyou for using our service.', $ncco);
+		return make_response('Your transaction is complete. Thankyou for using our service.');
 	}
 	else
-		return make_response('Your transaction has been cancelled.', $ncco);
+		return make_response('Your transaction has been cancelled.');
 
 });
 
