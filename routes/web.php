@@ -169,6 +169,7 @@ Route::post('/transaction', function(Request $request){
     $transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
+	$ncco["timeOut"] = "20";
 
     return make_response("Please enter the receiver number", $ncco);
 });
@@ -185,7 +186,7 @@ Route::post('/transaction_receiver', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "10",
+        "timeOut" => "20",
         "eventUrl" => [config('app.url') . '/transaction_receiver'],
         "bargeIn" => true
     ];
@@ -195,16 +196,21 @@ Route::post('/transaction_receiver', function(Request $request){
     $customer = Customer::where('number', $dtmf)->first();
 
 	if( is_null($customer) )
-		return make_response('Number not associated with any account. Try again.');
+		return make_response('Number not associated with any account. Try again.', $ncco);
 
     $transaction = $conversation->transaction;
 
    	$transaction->reciever_id = $customer->id;
    	$transaction->save();
 
-	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
+	$ncco["eventUrl"] = [config('app.url') . '/transaction_confirmation'];
+	$amount = $transaction->amount;
+	$user = $customer->number;
+    return make_response("You are transferring $amount to $user. Press 1 to confirm.", $ncco);
+});
 
-    return make_response("Please enter the receiver number", $ncco);
+Route::post('/transaction_confirmation', function(Request $request){
+
 });
 
 
