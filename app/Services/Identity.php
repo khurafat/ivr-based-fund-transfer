@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Conversation;
 use Illuminate\Http\Request;
 use App\Services\Identity;
 use App\Customer;
@@ -25,7 +26,7 @@ class Identity{
 		$customer = Customer::where('tpin', $tpin)->first();
 		if( !is_null($customer) ){
 			$this->auth = true;
-			$conv = $customer->conversation();
+            $conv = Conversation::where('customer_id', $customer->id)->orderBy('id',                                                'DESC')->first();
 			$conv->update(['authorized' => true]);
 		}
 	}
