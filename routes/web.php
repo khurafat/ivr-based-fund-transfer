@@ -145,7 +145,7 @@ Route::post('/transaction', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "5",
+        "timeOut" => "15",
         "eventUrl" => [config('app.url') . '/transaction'],
         "bargeIn" => true
     ];
@@ -169,7 +169,7 @@ Route::post('/transaction', function(Request $request){
     $transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
-	$ncco["timeOut"] = "20";
+	$ncco["timeOut"] = "30";
 
     return make_response("Please enter the receiver number", $ncco);
 });
@@ -186,7 +186,7 @@ Route::post('/transaction_receiver', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => "true",
-        "timeOut" => "20",
+        "timeOut" => "30",
         "eventUrl" => [config('app.url') . '/transaction_receiver'],
         "bargeIn" => true
     ];
@@ -204,6 +204,8 @@ Route::post('/transaction_receiver', function(Request $request){
    	$transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_confirmation'];
+	$ncco["timeOut"] = "10";
+
 	$amount = $transaction->amount;
 	$user = $customer->number;
     return make_response("You are transferring $amount to $user. Press 1 to confirm.", $ncco);
