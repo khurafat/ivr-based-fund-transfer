@@ -74,7 +74,7 @@ Route::get('/answer', function (Request $request)
             	"action" => "input",
             	"submitOnHash" => true,
             	"eventUrl" => [config('app.url') . '/auth'],
-            	"timeOut" => 10
+            	"timeOut" => 6
             ];
 
   	return make_response("Welcome to m Pay. Please enter your four digit t pin", $ncco);
@@ -92,7 +92,7 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => [config('app.url') . '/auth'],
-            "timeOut" => 5
+            "timeOut" => 3
         ];
 		return make_response("Invalid t pin entered, Please try again. Please enter your four digit t pin", $ncco);
 	}
@@ -101,7 +101,7 @@ Route::post('/auth', function (Request $request)
         [
             "action" => "input",
             "submitOnHash" => true,
-            "timeOut" => 5,
+            "timeOut" => 3,
             "eventUrl" => [config('app.url') . '/choice'],
         ];
   	return make_response("Thank you for confirming your account, Press 1 to Transfer Money, Press 2 to check balance", $ncco, true, 1 );
@@ -143,7 +143,7 @@ Route::post('/generate', function (Request $request)
     $conversation->customer->update(['tpin' => $dtmf, 'enabled' => true]);
 
     $ncco['eventUrl'] = [config('app.url') . '/auth'];
-    return make_response("Your pin has been generated. Please use this pin to authorize", $ncco);
+    return make_response("Your pin has been generated. Please enter this t pin again to authorize", $ncco);
 });
 
 
@@ -175,7 +175,7 @@ Route::post('/choice', function(Request $request) {
 		case '1': 
 			$text = "Enter the amount you want to transfer";
 			$ncco["eventUrl"] = [config('app.url') . '/transaction'];
-			$ncco["timeOut"] = 10;
+			$ncco["timeOut"] = 7;
 		break;
 
 		case '2':
@@ -250,7 +250,7 @@ Route::post('/transaction', function(Request $request){
     $transaction->save();
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
-	$ncco["timeOut"] = "30";
+	$ncco["timeOut"] = 15;
 
     return make_response("Please enter the receiver's mobile number", $ncco);
 });
@@ -268,7 +268,7 @@ Route::post('/transaction_receiver', function(Request $request){
         "action" => "input",
         "submitOnHash" => true,
         "maxDigits" => 10,
-        "timeOut" => 20,
+        "timeOut" => 15,
         "eventUrl" => [config('app.url') . '/transaction_receiver']
     ];
 
