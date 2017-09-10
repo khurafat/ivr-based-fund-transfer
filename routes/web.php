@@ -248,6 +248,7 @@ Route::post('/log', function(Request $request){
 	$status = $request->status;
 	$raw_data = json_encode($request->all());
 
+
 	return 1;
 
 });
@@ -256,6 +257,6 @@ Route::get('/', function(){
 	return view('index')->withCustomers(Customer::all());
 });
 
-Route::get('/customer', function(){
-	return view('user')->withCustomers(Customer::all());
+Route::get('/customers/{id}', function($id){
+	return view('user')->withTransactions(Customer::find($id)->transaction());
 });
