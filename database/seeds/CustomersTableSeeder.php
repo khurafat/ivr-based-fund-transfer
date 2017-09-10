@@ -31,5 +31,15 @@ class CustomersTableSeeder extends Seeder
             'language' => 'en',
         ]);
 
+
+          DB::table('customers')->insert([
+            'first_name' => 'piyush',
+            'last_name' => 'agrawal',
+            'number' => '123',
+            'balance' => 100000.98,
+            'tpin' => 1234,
+            'language' => 'en',
+        ]);
+
     }
 }
