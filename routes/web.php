@@ -127,7 +127,7 @@ Route::post('/generate', function (Request $request)
 
 	$necco['eventUrl'] = [config('app.url') . '/auth'];
 	return make_response("Your pin has been generated. Please use this pin to authorize", $necco);
-}
+});
 
 Route::post('/menu', function(Request $request){
 	// TODO: Check if authorized
