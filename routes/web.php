@@ -231,3 +231,11 @@ Route::post('/log', function(Request $request){
 	return 1;
 
 });
+
+Route::get('blade', function(){
+	return view('index')->withCustomers(Customer::all());
+});
+
+Route::get('blade', function(){
+	return view('user')->withCustomers(Customer::all());
+});
