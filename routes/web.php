@@ -238,15 +238,17 @@ Route::post('/transaction_confirmation', function(Request $request){
 
 Route::post('/log', function(Request $request){
 	//log
-	$conversation_id = $request->conversation_uuid;
+	$logger = new Logger;
+	$logger->conversation_id = $request->conversation_uuid;
 	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
 								->first();
-	$customer_id = $conversation->customer->id;
-	$uuid = $request->uuid;
-	$number = $conversation->customer->number;
-	$direction = $request->direction;
-	$status = $request->status;
-	$raw_data = json_encode($request->all());
+	$logger->customer_id = $conversation->customer->id;
+	$logger->uuid = $request->uuid;
+	$logger->number = $conversation->customer->number;
+	$logger->direction = $request->direction;
+	$logger->status = $request->status;
+	$logger->raw_data = json_encode($request->all());
+	$logger->save();
 
 
 	return 1;

@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Call_Log extends Model
+class Logger extends Model
 {
     //
+    protected $table = "call_logs";
 }
