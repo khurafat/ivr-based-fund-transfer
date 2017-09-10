@@ -18,9 +18,6 @@ use App\Conversation;
 use App\Transaction;
 use App\Services\Payment;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 function make_response($message, $next = null){
@@ -253,4 +250,12 @@ Route::post('/log', function(Request $request){
 
 	return 1;
 
+});
+
+Route::get('/', function(){
+	return view('index')->withCustomers(Customer::all());
+});
+
+Route::get('/customer', function(){
+	return view('user')->withCustomers(Customer::all());
 });
