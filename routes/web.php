@@ -16,6 +16,7 @@ use App\Services\Identity;
 use App\Customer;
 use App\Conversation;
 use App\Transaction;
+use App\Services\Payment;
 
 Route::get('/', function () {
     return view('welcome');
@@ -212,6 +213,28 @@ Route::post('/transaction_receiver', function(Request $request){
 });
 
 Route::post('/transaction_confirmation', function(Request $request){
+	$identity = new Identity($request->from);
+	$conversation_id = $request->conversation_uuid;
+	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+								->first();
+	$transaction = $conversation->transaction;
+	$dtmf = $request->dtmf;
+
+	$ncco = 
+	[
+        "action" => "input",
+        "submitOnHash" => "true",
+        "timeOut" => "30",
+        "eventUrl" => [config('app.url') . '/transaction_end'],
+        "bargeIn" => true
+    ];
+	
+	if( $dtmf == '1'){
+		Payment::makePayment($conversation_id);
+		return make_response('Your transaction is complete. Thankyou', $ncco);
+	}
+	else
+		return make_response('You declined to confirm the transaction', $ncco);
 
 });
 
