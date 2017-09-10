@@ -21,7 +21,7 @@ use App\Services\Payment;
 
 
 
-function make_response($message, $next = null, $bargIn = true, $loop = 2, $eventUrl = null) {
+function make_response($message, $next = null, $bargIn = true, $loop = 1, $eventUrl = null) {
 
     $temp = [
         'action' => 'talk',
@@ -31,9 +31,7 @@ function make_response($message, $next = null, $bargIn = true, $loop = 2, $event
         "loop"  =>  $loop,
     ];
 
-    if (!is_null($eventUrl)) {
-        $temp["eventUrl"]  =[config('app.url') . $eventUrl];
-    }
+
 	$data = [
 		$temp
 	];
@@ -164,8 +162,8 @@ Route::post('/choice', function(Request $request) {
 	[
         "action" => "input",
         "submitOnHash" => true,
-        "timeOut" => 5,
-        "maxDigits" => 1,
+        "timeOut" => 10,
+        "maxDigits" => 5,
         "eventUrl" => [config('app.url') . '/choice'],
     ];
 
@@ -303,21 +301,20 @@ Route::post('/transaction_confirmation', function(Request $request){
 	$transaction = $conversation->transaction;
 	$dtmf = $request->dtmf;
 
-//	$ncco =
-//	[
-//        "action" => "input",
-//        "submitOnHash" => "true",
-//        "timeOut" => "5",
-//        "eventUrl" => [config('app.url') . '/transaction_end'],
-//        "bargeIn" => true
-//    ];
+	$ncco =
+	[
+        "action" => "input",
+        "submitOnHash" => true,
+        "timeOut" => 2,
+        "eventUrl" => [config('app.url') . '/transaction_end']
+    ];
 	
 	if( $dtmf == '1'){
 		Payment::makePayment($conversation_id);
-		return make_response('Your transaction is complete. Thankyou for using our service.', null, false);
+		return make_response('Your transaction is complete. Thankyou for using our service.', $ncco, false);
 	}
 	else
-		return make_response('Your transaction has been cancelled.', null, false);
+		return make_response('Your transaction has been cancelled.', $ncco, false);
 
 });
 
