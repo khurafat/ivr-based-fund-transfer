@@ -251,6 +251,7 @@ Route::post('/transaction', function(Request $request){
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_receiver'];
 	$ncco["timeOut"] = 15;
+	$ncco["maxDigits"] = 10;
 
     return make_response("Please enter the receiver's mobile number", $ncco);
 });
@@ -286,6 +287,7 @@ Route::post('/transaction_receiver', function(Request $request){
 
 	$ncco["eventUrl"] = [config('app.url') . '/transaction_confirmation'];
 	$ncco["timeOut"] = "5";
+	$ncco["maxDigits"] = 1;
 
 	$amount = $transaction->amount;
 	$user = implode(" ", str_split($customer->number));
