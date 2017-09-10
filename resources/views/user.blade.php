@@ -125,11 +125,11 @@
                               </thead>
                               <tbody>
                                 <tr>
-                                @foreach($customer->tansaction as $transaction)
-                                  <th scope="row">{{transaction->id}}</th>
-                                  <td>{{transaction->amount}}</td>
-                                  <td>{{transaction->receiver_id}}</td>
-                                  <td>{{transaction->status}}</td>
+                                @foreach($customer->transaction as $transaction)
+                                  <th scope="row">{{transaction['id']}}</th>
+                                  <td>{{transaction['amount']}}</td>
+                                  <td>{{transaction['receiver_id']}}</td>
+                                  <td>{{transaction['status']}}</td>
                               @endforeach
                               </tbody>
                             </table>
