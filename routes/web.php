@@ -21,12 +21,15 @@ use App\Services\Payment;
 
 
 
-function make_response($message, $next = null){
+function make_response($message, $next = null, $bargIn = true, $loop = 2, $eventUrl = null) {
 	$data = [
 		[
       		'action' => 'talk',
       		'voiceName' => 'Raveena',
-    		'text' => "$message"
+    		'text' => "$message",
+            "bargeIn" => $bargIn,
+            "loop"  =>  $loop,
+            "eventUrl"  =>[config('app.url') . $eventUrl]
     	],
 	];
 	if( !is_null($data) ){
@@ -48,8 +51,7 @@ Route::get('/answer', function (Request $request)
             	"action" => "input",
             	"submitOnHash" => "true",
             	"eventUrl" => [config('app.url') . '/generate'],
-            	"timeOut" => "15",
-            	"bargeIn" => true
+            	"timeOut" => "15"
             ];
 
 
@@ -67,13 +69,12 @@ Route::get('/answer', function (Request $request)
 
 	$ncco = [
             	"action" => "input",
-            	"submitOnHash" => "true",
+            	"submitOnHash" => true,
             	"eventUrl" => [config('app.url') . '/auth'],
-            	"timeOut" => "10",
-            	"bargeIn" => true
+            	"timeOut" => 10
             ];
 
-  	return make_response("Welcome to mPay. Please enter your 4 digit t pin", $ncco);
+  	return make_response("Welcome to m Pay. Please enter your 4 digit t pin", $ncco);
 });
 
 
@@ -88,24 +89,16 @@ Route::post('/auth', function (Request $request)
             "action" => "input",
             "submitOnHash" => "true",
             "eventUrl" => [config('app.url') . '/auth'],
-            "timeOut" => "15",
-            "bargeIn" => true
+            "timeOut" => "15"
         ];
 		return make_response("Invalid t pin entered. Please try again. Please enter your 4 digit t pin", $ncco);
 	}
 
-	$ncco = 
-    	[
-            "action" => "input",
-            "submitOnHash" => "true",
-            "timeOut" => "5",
-            "eventUrl" => [config('app.url') . '/menu'],
-            "bargeIn" => true
-        ];
-  	return make_response("Thanks for the confirming your account, Press 1 to Transfer Money, Press 2 to check balance", $ncco );
+
+  	return make_response("Thanks for confirming your account.", null, false, 1,   '/menu' );
 });
 
-Route::post('/generate', function (Request $request)
+Route::post('/menu', function (Request $request)
 {
 	$conversation_id = $request->conversation_uuid;
 	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
@@ -116,20 +109,40 @@ Route::post('/generate', function (Request $request)
         "action" => "input",
         "submitOnHash" => "true",
         "timeOut" => "15",
-        "eventUrl" => [config('app.url') . '/generate'],
-        "bargeIn" => true
+        "eventUrl" => [config('app.url') . '/choice'],
     ];
-	$dtmf = $request->dtmf;
-	if(strlen($dtmf) != 4)
-		return make_response("Invalid t pin, try again", $necco);
-
-	$conversation->customer->update(['tpin' => $dtmf, 'enabled' => true]);
-
-	$ncco['eventUrl'] = [config('app.url') . '/auth'];
-	return make_response("Your pin has been generated. Please use this pin to authorize", $ncco);
+    return make_response("Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
 
-Route::post('/menu', function(Request $request){
+Route::post('/generate', function (Request $request)
+{
+    $conversation_id = $request->conversation_uuid;
+    $conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+        ->first();
+
+    $ncco =
+        [
+            "action" => "input",
+            "submitOnHash" => true,
+            "timeOut" => 5,
+            "eventUrl" => [config('app.url') . '/menu'],
+        ];
+    $dtmf = $request->dtmf;
+    if(strlen($dtmf) != 4)
+        return make_response("Invalid t pin, try again", $necco);
+
+    $conversation->customer->update(['tpin' => $dtmf, 'enabled' => true]);
+
+    $ncco['eventUrl'] = [config('app.url') . '/auth'];
+    return make_response("Your pin has been generated. Please use this pin to authorize", $ncco);
+});
+
+
+
+
+
+Route::post('/choice', function(Request $request) {
+
 	// TODO: Check if authorized for given conversation_uuid
 	$identity = new Identity($request->from);
 	$conversation_id = $request->conversation_uuid;
@@ -140,10 +153,9 @@ Route::post('/menu', function(Request $request){
 	[
         "action" => "input",
         "submitOnHash" => true,
-        "timeOut" => "5",
-        "maxDigits" => "5",
+        "timeOut" => 5,
+        "maxDigits" => 1,
         "eventUrl" => [config('app.url') . '/menu'],
-        "bargeIn" => true
     ];
 
 	$dtmf = $request->dtmf;
@@ -154,7 +166,7 @@ Route::post('/menu', function(Request $request){
 		case '1': 
 			$text = "Enter the amount you want to transfer";
 			$ncco["eventUrl"] = [config('app.url') . '/transaction'];
-			$ncco["timeOut"] = "15";
+			$ncco["timeOut"] = 10;
 		break;
 
 		case '2':
@@ -177,16 +189,6 @@ Route::post('/back-to-menu', function(Request $request){
     $conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
         ->first();
 
-    $ncco =
-        [
-            "action" => "input",
-            "submitOnHash" => true,
-            "timeOut" => "5",
-            "maxDigits" => "1",
-            "eventUrl" => [config('app.url') . '/menu'],
-            "bargeIn" => true
-        ];
-
     $dtmf = $request->dtmf;
     if( $dtmf != '*'){
         return make_response("Thankyou for using mPay.");
@@ -195,10 +197,10 @@ Route::post('/back-to-menu', function(Request $request){
     $ncco =
         [
             "action" => "input",
-            "submitOnHash" => "true",
-            "timeOut" => "5",
-            "eventUrl" => [config('app.url') . '/menu'],
-            "bargeIn" => true
+            "submitOnHash" => true,
+            "timeOut" => 5,
+            "eventUrl" => [config('app.url') . '/choice'],
+            "loop"     =>   2
         ];
     return make_response("Press 1 to Transfer Money, Press 2 to check balance", $ncco );
 });
@@ -215,11 +217,10 @@ Route::post('/transaction', function(Request $request){
 	$ncco = 
 	[
         "action" => "input",
-        "submitOnHash" => "true",
-        "timeOut" => "15",
-        "maxDigits" => "5",
-        "eventUrl" => [config('app.url') . '/transaction'],
-        "bargeIn" => true
+        "submitOnHash" => true,
+        "timeOut" => 10,
+        "maxDigits" => 5,
+        "eventUrl" => [config('app.url') . '/transaction']
     ];
 
     $dtmf = $request->dtmf;
@@ -260,8 +261,7 @@ Route::post('/transaction_receiver', function(Request $request){
         "submitOnHash" => "true",
         "maxDigits" => "10",
         "timeOut" => "20",
-        "eventUrl" => [config('app.url') . '/transaction_receiver'],
-        "bargeIn" => true
+        "eventUrl" => [config('app.url') . '/transaction_receiver']
     ];
 
     $dtmf = $request->dtmf;
@@ -303,10 +303,10 @@ Route::post('/transaction_confirmation', function(Request $request){
 	
 	if( $dtmf == '1'){
 		Payment::makePayment($conversation_id);
-		return make_response('Your transaction is complete. Thankyou for using our service.');
+		return make_response('Your transaction is complete. Thankyou for using our service.', null, false);
 	}
 	else
-		return make_response('Your transaction has been cancelled.');
+		return make_response('Your transaction has been cancelled.', null, false);
 
 });
 
