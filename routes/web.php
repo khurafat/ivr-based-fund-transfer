@@ -44,6 +44,15 @@ Route::get('/answer', function (Request $request)
 	if( is_null($customer) )
 		return make_response('Number not registered. Please call with registered number.');
 
+	$ncco = [
+            	"action" => "input",
+            	"submitOnHash" => "true",
+            	"eventUrl" => [config('app.url') . '/generate'],
+            	"timeOut" => "15",
+            	"bargeIn" => true
+            ];
+
+
 	$conversation_id = $request->conversation_uuid;
 	$conversation = new Conversation;
 
@@ -52,6 +61,9 @@ Route::get('/answer', function (Request $request)
 	$conversation->last_input = 0;
 
 	$conversation->save();
+
+	if( !$customer->enabled )
+		return make_response("Please first create t pin. Enter a 4 digit number", $ncco);
 
 	$ncco = [
             	"action" => "input",
@@ -92,6 +104,30 @@ Route::post('/auth', function (Request $request)
         ];
   	return make_response("Thanks for the authentication, Press 1 to Transfer Money, Press 2 to check balance, Press 3 for", $ncco );
 });
+
+Route::post('/generate', function (Request $request)
+{
+	$conversation_id = $request->conversation_uuid;
+	$conversation = Conversation::where('conversation_id', $conversation_id)->orderby('id', 'desc')
+								->first();
+
+	$ncco = 
+	[
+        "action" => "input",
+        "submitOnHash" => "true",
+        "timeOut" => "15",
+        "eventUrl" => [config('app.url') . '/generate'],
+        "bargeIn" => true
+    ];
+	$dtmf = $request->dtmf;
+	if(strlen($dtmf) != 4)
+		return make_response("Invalid t pin, try again", $necco);
+
+	$conversation->customer->update(['tpin' => $dtmf]);
+
+	$necco['eventUrl'] = [config('app.url') . '/auth'];
+	return make_response("Your pin has been generated. Please use this pin to authorize", $necco);
+}
 
 Route::post('/menu', function(Request $request){
 	// TODO: Check if authorized
