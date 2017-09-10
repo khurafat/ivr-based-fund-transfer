@@ -14,6 +14,8 @@ class Payment{
 		if( !is_null($conversation) ){
 			if($conversation->authorized==1){
 				$transaction = $conversation->transaction;
+				if($transaction->status == 2)
+					return false;
 				$amount = $transaction->amount;
 				$customer = Customer::where('id', $transaction->customer->id)->first();
 				$receiver_id = $transaction->reciever_id;
@@ -23,6 +25,8 @@ class Payment{
 				$customer->save();
 				$receiver->balance += floatval($amount);
 				$receiver->save();
+				$transaction->status = 2;
+				$transaction->save();
 				return true;
 			}
 		}
