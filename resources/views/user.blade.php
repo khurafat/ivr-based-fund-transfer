@@ -33,7 +33,7 @@
                           <div class="col-sm-12">
                             <h4 class="brief"><i>---USER---</i></h4>
                             <div class="left col-xs-7">
-                              <h2>---name---</h2>
+                              <h2>{{$customer->first_name}}</h2>
                               <p><strong>Aadhaar: </strong> -------- </p>
                               <ul class="list-unstyled">
                                 <li><i class="fa fa-building"></i> Address: </li>
